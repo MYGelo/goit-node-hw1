@@ -49,7 +49,7 @@ function addContact(name, email, phone) {
       email: email,
       phone: phone,
     });
-    console.log('Contacts added successfully! New lists of contacts: ');
+    console.log('Contact added! New lists of contacts: ');
     console.table(contacts);
     fs.writeFile(contactsPath, JSON.stringify(contacts), error => {
       if (error) {
@@ -60,26 +60,30 @@ function addContact(name, email, phone) {
 }
 function removeContact(contactId) {
   fs.readFile(contactsPath, 'utf-8', (error, data) => {
-    if (error) {
-      return console.log(error);
-    }
     const contacts = JSON.parse(data);
     const deleteContact = contacts.filter(contact => {
       if (contact.id === contactId) {
-        console.log(`Delete contact with ID "${contactId}". New list:`);
-      }
-      if (contact == null) {
-        console.log(`Contact with ID "${contactId}" not found!`);
-      }
-    });
-    const newContacts = contacts.filter(contact => contact.id !== contactId);
-    console.table(newContacts);
+        console.log(
+          `Delete contact with ID "${contactId}". New list of contacts:`
+        );
+        const newContacts = contacts.filter(
+          contact => contact.id !== contactId
+        );
+        console.table(newContacts);
 
-    fs.writeFile(contactsPath, JSON.stringify(newContacts), error => {
-      if (error) {
-        return console.log(error);
+        fs.writeFile(contactsPath, JSON.stringify(newContacts), error => {
+          if (error) {
+            return console.log(error);
+          }
+        });
       }
     });
+    if (error) {
+      return console.log(error);
+    }
+    // else {
+    //   console.log(`Contact with ID "${contactId}" not found!`);
+    // }
   });
 }
 
@@ -89,18 +93,3 @@ module.exports = {
   removeContact,
   getContactById,
 };
-
-// const contactsPath = path.resolve('./db/contacts.json');
-
-// const contactList = async () => {
-//   await fs.readFile(contactsPath, 'utf-8');
-// };
-
-// const addContacts = async () => {
-//   const result = await fs.appendFile(contactsPath, ' то.что нужно добавить');
-//   console.log(result);
-// };
-// const deleteContact = async () => {
-//   const del = await fs.writeFile(contactsPath, 'пусто');
-//   console.log(del);
-// };
