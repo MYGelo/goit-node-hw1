@@ -81,9 +81,6 @@ function removeContact(contactId) {
     if (error) {
       return console.log(error);
     }
-    // else {
-    //   console.log(`Contact with ID "${contactId}" not found!`);
-    // }
   });
 }
 
