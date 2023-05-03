@@ -1,15 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-
 const contactsPath = path.resolve('./db/contacts.json');
 
-// TODO: задокументировать каждую функцию
 function listContacts() {
   fs.readFile(contactsPath, 'utf-8', (error, data) => {
     if (error) {
       return console.log(error);
     }
-
     const contacts = JSON.parse(data);
     console.log('List of contacts: ');
     console.table(contacts);
@@ -21,9 +18,7 @@ function getContactById(contactId) {
     if (error) {
       return console.log(error);
     }
-
     const contacts = JSON.parse(data);
-
     const contact = contacts.find(contact => {
       if (contact.id === contactId) {
         console.log(`Find contact by ID ${contactId}:`);
@@ -37,15 +32,19 @@ function getContactById(contactId) {
     }
   });
 }
-// fs.appendFile(contactsPath, ' то.что нужно добавить');
+
 function addContact(name, email, phone) {
   fs.readFile(contactsPath, 'utf-8', (error, data) => {
     if (error) {
       return console.log(error);
     }
     const contacts = JSON.parse(data);
+    const random =
+      Math.floor(
+        Math.random() * (999999999999999999999 - 100000000000000000000 + 1)
+      ) + 100000000000000000000;
     contacts.push({
-      id: contacts.length + 1,
+      id: random.toString(),
       name: name,
       email: email,
       phone: phone,
@@ -59,9 +58,29 @@ function addContact(name, email, phone) {
     });
   });
 }
-
 function removeContact(contactId) {
-  fs.writeFile(contactsPath, 'пусто');
+  fs.readFile(contactsPath, 'utf-8', (error, data) => {
+    if (error) {
+      return console.log(error);
+    }
+    const contacts = JSON.parse(data);
+    const deleteContact = contacts.filter(contact => {
+      if (contact.id === contactId) {
+        console.log(`Delete contact with ID "${contactId}". New list:`);
+      }
+      if (contact == null) {
+        console.log(`Contact with ID "${contactId}" not found!`);
+      }
+    });
+    const newContacts = contacts.filter(contact => contact.id !== contactId);
+    console.table(newContacts);
+
+    fs.writeFile(contactsPath, JSON.stringify(newContacts), error => {
+      if (error) {
+        return console.log(error);
+      }
+    });
+  });
 }
 
 module.exports = {
